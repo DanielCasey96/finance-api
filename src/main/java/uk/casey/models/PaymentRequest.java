@@ -13,6 +13,9 @@ public class PaymentRequest {
         this.currency = currency;
     }
 
+    public PaymentRequest() {
+    }
+
     public BigDecimal getAmount() {
         return this.amount;
     }

@@ -2,7 +2,6 @@ package uk.casey.request;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import jdk.internal.icu.lang.UCharacterDirection;
 import uk.casey.models.PaymentRequest;
 
 import java.io.IOException;
@@ -12,9 +11,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class PaymentHandler implements HttpHandler {
 
-    PaymentRequest paymentRequest = new PaymentRequest();
-
     public void handle(HttpExchange exchange) throws IOException {
+
         PaymentService paymentService = new PaymentService();
 
         if ("POST".equals(exchange.getRequestMethod())) {
@@ -40,14 +38,14 @@ public class PaymentHandler implements HttpHandler {
 
             try {
                 paymentRequest = objectMapper.readValue(body.toString(), PaymentRequest.class);
-            } catch (Execption e) {
+            } catch (Exception e) {
                 exchange.sendResponseHeaders(400, -1);
                 System.out.println("Invalid JSON format");
                 return;
             }
 
-            if (!paymentService.paymentAmountIsValid(paymentRequest)) { // Replace null with actual amount extraction logic
-                exchange.sendResponseHeaders(400, -1); // Bad Request
+            if (!paymentService.paymentRequestBodyIsValid(paymentRequest)) {
+                exchange.sendResponseHeaders(400, -1);
                 return;
             }
 
