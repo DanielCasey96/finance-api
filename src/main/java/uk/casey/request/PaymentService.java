@@ -12,4 +12,20 @@ public class PaymentService {
                 && request.getPaymentType() != null && !request.getPaymentType().trim().isEmpty()
                 && request.getCurrency() != null && !request.getCurrency().trim().isEmpty();
     }
+
+    public boolean processPayment(PaymentRequest request) {
+
+        try {
+            return savePayemntToDatabase(request);
+        } catch (Exception e) {
+            System.out.println("Error processing payment: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean savePayemntToDatabase(PaymentRequest request) {
+        //TODO add DB integration
+        System.out.println("I saved the payment to the database");
+        return true;
+    }
 }

@@ -48,11 +48,14 @@ public class PaymentHandler implements HttpHandler {
                 exchange.sendResponseHeaders(400, -1);
                 return;
             }
+            System.out.println("Received payment data: " + objectMapper.writeValueAsString(paymentRequest));
 
-            System.out.println("Received payment data: " + body.toString());
+            paymentService.processPayment(paymentRequest);
+
             String response = "Payment processed";
             exchange.sendResponseHeaders(200, response.length());
             exchange.getResponseBody().write(response.getBytes());
+            exchange.getResponseBody().flush();
             exchange.getResponseBody().close();
         } else {
             exchange.sendResponseHeaders(405, -1); // Method Not Allowed
