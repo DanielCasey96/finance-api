@@ -3,6 +3,8 @@ package uk.casey.request;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import uk.casey.models.PaymentRequest;
+import java.util.Map;
+import java.util.HashMap;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,13 +52,20 @@ public class PaymentHandler implements HttpHandler {
             }
             System.out.println("Received payment data: " + objectMapper.writeValueAsString(paymentRequest));
 
-            paymentService.processPayment(paymentRequest);
+            if (paymentService.processPayment(paymentRequest)) {
 
-            String response = "Payment processed";
-            exchange.sendResponseHeaders(200, response.length());
-            exchange.getResponseBody().write(response.getBytes());
-            exchange.getResponseBody().flush();
-            exchange.getResponseBody().close();
+                Map<String, Object> responseMap = new HashMap<>();
+                responseMap.put("processed", true);
+                responseMap.putAll(objectMapper.convertValue(paymentRequest, Map.class));
+                String response = objectMapper.writeValueAsString(responseMap);
+
+                exchange.sendResponseHeaders(200, response.length());
+                exchange.getResponseBody().write(response.getBytes());
+                exchange.getResponseBody().flush();
+                exchange.getResponseBody().close();
+            } else {
+                exchange.sendResponseHeaders(500, -1); // Internal Server Error
+            }
         } else {
             exchange.sendResponseHeaders(405, -1); // Method Not Allowed
         }
