@@ -1,8 +1,8 @@
 package uk.casey.request;
 
-import com.sun.net.httpserver.HttpServer;
-
 import java.net.InetSocketAddress;
+
+import com.sun.net.httpserver.HttpServer;
 
 public class PaymentController {
 
